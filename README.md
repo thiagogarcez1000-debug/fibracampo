@@ -1,19 +1,24 @@
 # FibraCampo – Gerenciador de ONUs Mobile
 
-Aplicativo Android para a equipe de campo da rede óptica (GPON) da Prefeitura Municipal de Anápolis.
+Aplicativo mobile (Android) para a equipe de campo da rede óptica (GPON) da Prefeitura Municipal de Anápolis.
 Projeto extensionista da disciplina **Programação Mobile Aplicada** – UniEVANGÉLICA, 2026/2.
 
-**Aluno:** Thiago José da Silva Garcez
+**Aluno:** D2510495 – Thiago José da Silva Garcez (GitHub: thiagogarcez1000-debug)
 **Instituição parceira:** Prefeitura Municipal de Anápolis – Gerência de TI
+**Kanban:** https://trello.com/b/06m2mJYt
 
 ## Objetivo
-Levar ao celular do técnico os pontos da rede fora do ar, o tempo de queda, o mapa com a rota da fibra,
+Levar ao celular/tablet do técnico os pontos da rede fora do ar, o tempo de queda, o mapa com a rota da fibra,
 o teste do ponto ("testar agora") e o registro do atendimento com foto e GPS, inclusive sem internet.
 
-## Estrutura
-- `app/`: aplicativo Flutter (Android 8.0+)
-- `api/`: API em Python (FastAPI) que reaproveita a varredura do Gerenciador de ONUs
-- `docs/`: relatório, diagramas e wireframes
+## Situação do repositório (27/10/2026)
+| Pasta | Situação |
+|---|---|
+| `docs/` | **Registrada no GitHub**: arquitetura, backlog, regras de sincronização e registro da Sprint 1 |
+| `api/` | **Prevista** – módulo `api_mobile.py` ligado ao servidor do Gerenciador (código existe no repositório local desde 18/10/2026; ainda não enviado) |
+| `app/` | **Prevista** – PWA em React + TypeScript instalável no Android (na proposta era Flutter; código no repositório local desde 18/10/2026; ainda não enviado) |
+
+Nenhuma senha, IP de equipamento ou planilha da rede é versionada.
 
 ## Sprints
 | Sprint | Período | Foco |
