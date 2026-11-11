@@ -1,0 +1,21 @@
+{
+  "name": "fibracampo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FibraCampo - app de campo da rede óptica da Prefeitura de Anápolis (PWA)",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs --watch",
+    "tipos": "tsc --ignoreConfig --noEmit --strict --target ES2022 --lib ES2022,DOM,DOM.Iterable --moduleResolution bundler --module esnext --skipLibCheck src/util.ts src/fila.ts src/api.ts src/armazenamento.ts src/avisos.ts src/instalar.ts src/sincronia.ts src/fotos.ts src/tipos.ts",
+    "test": "node --import tsx --test testes/*.test.ts"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}
