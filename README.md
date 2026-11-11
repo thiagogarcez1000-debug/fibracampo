@@ -11,14 +11,23 @@ Projeto extensionista da disciplina **Programação Mobile Aplicada** – UniEVA
 Levar ao celular/tablet do técnico os pontos da rede fora do ar, o tempo de queda, o mapa com a rota da fibra,
 o teste do ponto ("testar agora") e o registro do atendimento com foto e GPS, inclusive sem internet.
 
-## Situação do repositório (27/10/2026)
+## Situação do repositório (11/11/2026)
 | Pasta | Situação |
 |---|---|
-| `docs/` | **Registrada no GitHub**: arquitetura, backlog, regras de sincronização e registro da Sprint 1 |
-| `api/` | **Prevista** – módulo `api_mobile.py` ligado ao servidor do Gerenciador (código existe no repositório local desde 18/10/2026; ainda não enviado) |
-| `app/` | **Prevista** – PWA em React + TypeScript instalável no Android (na proposta era Flutter; código no repositório local desde 18/10/2026; ainda não enviado) |
+| `docs/` | Arquitetura, backlog, regras de sincronização, registro da Sprint 1, roteiro de testes, instalação e `historico_local.md` (os 18 commits locais de 18/10/2026) |
+| `api/` | Módulo `api_mobile.py` ligado ao servidor do Painel NOC, instalador com backup, servidor de desenvolvimento (dados fictícios) e 8 testes |
+| `app/` | PWA em React + TypeScript (na proposta era Flutter): código-fonte e 11 testes. O build (`app/dist`) e os ícones PNG não são versionados |
+
+O código de `app/` e `api/` foi escrito em 18/10/2026 no repositório local e publicado aqui em 11/11/2026; por isso os commits do GitHub têm a data da publicação.
+US01 a US05 foram testadas só em desenvolvimento (dados fictícios). US06 a US10 ainda não foram validadas. A validação no servidor real e no aparelho pela VPN é o card T01.
 
 Nenhuma senha, IP de equipamento ou planilha da rede é versionada.
+
+## Como rodar os testes
+```bash
+cd api && python -m pytest -q test_api_mobile.py   # 8 testes da API
+cd app && npm install && npm test                  # 11 testes do app
+```
 
 ## Sprints
 | Sprint | Período | Foco |
