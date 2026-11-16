@@ -61,3 +61,32 @@ test("contador de pendentes avisa a tela", async () => {
 test("uuid no formato aceito pela API", () => {
   assert.match(novoUuid(), /^[0-9a-f-]{36}$/);
 });
+
+test("US11/CA07: pendentes ficam presos ao usuário que registrou", async () => {
+  let usuario = "tecnico";
+  const dep = depositoMemoria();
+  const enviados: string[] = [];
+  const f = new Fila(dep, async (i: ItemFila) => { enviados.push(i.usuario || ""); return { ok: true }; }, () => usuario);
+  const semRede = new Fila(dep, async () => { throw semSinal(); }, () => usuario);
+  await semRede.adicionar(at(1), ["data:image/jpeg;base64,AAA"]);
+  usuario = "suporte";                                  // outra conta entra no mesmo aparelho
+  assert.equal((await f.pendentes()).length, 0);        // não vê o pendente do técnico
+  assert.equal(await f.sincronizar(), 0);               // e não envia em nome dele
+  usuario = "tecnico";                                  // o técnico volta
+  assert.equal((await f.pendentes()).length, 1);
+  assert.equal(await f.sincronizar(), 1);
+  assert.deepEqual(enviados, ["tecnico"]);
+});
+
+test("US11: contador de pendentes conta só os do usuário atual", async () => {
+  let usuario = "tecnico";
+  const f = new Fila(depositoMemoria(), async () => { throw semSinal(); }, () => usuario);
+  await f.adicionar(at(1), []); await f.adicionar(at(2), []);
+  let n = -1; f.ouvir((x) => { n = x; });
+  await new Promise((r) => setTimeout(r, 10));
+  assert.equal(n, 2);
+  usuario = "suporte";
+  let m = -1; f.ouvir((x) => { m = x; });
+  await new Promise((r) => setTimeout(r, 10));
+  assert.equal(m, 0);
+});
