@@ -108,3 +108,4 @@ textarea{min-height:90px;resize:vertical}
 details.avancado{font-size:14px;color:var(--mu)}
 details.avancado summary{min-height:44px;display:flex;align-items:center}
 .toast{position:fixed;left:50%;transform:translateX(-50%);width:min(92vw,440px);bottom:calc(84px + env(safe-area-inset-bottom));z-index:9;background:#0f172a;border:1px solid var(--ln);border-radius:12px;padding:12px 16px;font-weight:700;max-width:92vw;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.alerta[role=alertdialog]{display:flex;flex-direction:column;gap:8px}
