@@ -59,9 +59,13 @@ function Logado({ aoSair }: { aoSair: () => void }) {
   }, [rota.tela, rota.arg]);
   function mostrar(t: string) { setToast(t); setTimeout(() => setToast(""), 4500); }
 
-  async function sairDaConta() {
+  const [confirmaSaida, setConfirmaSaida] = useState(false);
+  async function sairDaConta(forcar = false) {
+    // US11 (15/11/2026): com atendimentos não enviados, avisa antes de sair. Os pendentes ficam no aparelho,
+    // presos ao usuário que os registrou, e são enviados quando ele entrar de novo.
+    if (!forcar && (await fila.pendentes()).length > 0) { setConfirmaSaida(true); return; }
     await sair();
-    apagarTudo();             // segurança: sair apaga token e dados locais (aparelho pode ser pessoal)
+    apagarTudo();             // segurança: sair apaga token e cache da lista (aparelho pode ser pessoal); a fila fica, por usuário
     aoSair();
   }
 
@@ -101,7 +105,16 @@ function Logado({ aoSair }: { aoSair: () => void }) {
           <div className="meta">Avisa no celular quando SAMU, UPA, hospitais e outros pontos críticos caem ou voltam.</div>
           {instalavel && !jaInstalado() && <button className="bt" onClick={() => instalar()}>📲 Instalar o FibraCampo no celular</button>}
           {jaInstalado() && <div className="ok">✔ App instalado neste aparelho.</div>}
-          <button className="bt laranja" onClick={sairDaConta}>Sair e apagar dados do aparelho</button>
+          {confirmaSaida ? (
+            <div className="alerta" role="alertdialog" aria-label="Confirmar saída">
+              <b>Você tem {pend} atendimento(s) ainda não enviado(s).</b>
+              <span>Eles continuam guardados neste aparelho, só para o usuário {ler("usuario", "")}, e serão enviados quando você entrar de novo. Outra conta não vê esses registros.</span>
+              <button className="bt laranja" onClick={() => sairDaConta(true)}>Sair mesmo assim</button>
+              <button className="bt cinza" onClick={() => setConfirmaSaida(false)}>Ficar e enviar depois</button>
+            </div>
+          ) : (
+            <button className="bt laranja" onClick={() => sairDaConta()}>Sair da conta</button>
+          )}
           <div className="meta">Versão {typeof __VERSAO__ !== "undefined" ? __VERSAO__ : "dev"}</div>
         </div>
       );
