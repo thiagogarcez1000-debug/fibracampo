@@ -3,7 +3,8 @@
 // reenviar depois de uma queda de sinal nunca duplica o atendimento.
 import type { Atendimento } from "./tipos";
 
-export type ItemFila = Atendimento & { fotos_b64: string[]; tentativas: number; ultimoErro?: string };
+// usuario (US11, 15/11/2026): o pendente pertence a quem o registrou; outra conta no mesmo aparelho não vê nem envia.
+export type ItemFila = Atendimento & { fotos_b64: string[]; tentativas: number; ultimoErro?: string; usuario?: string };
 
 export interface Deposito {
   todos(): Promise<ItemFila[]>;
@@ -48,15 +49,18 @@ export type Enviar = (i: ItemFila) => Promise<{ ok: boolean }>;
 export class Fila {
   private enviando = false;
   private ouvintes = new Set<(n: number) => void>();
-  constructor(private dep: Deposito, private enviar: Enviar) {}
+  constructor(private dep: Deposito, private enviar: Enviar, private dono: () => string = () => "") {}
 
   async adicionar(a: Atendimento, fotos_b64: string[]): Promise<void> {
-    await this.dep.salvar({ ...a, fotos_b64, tentativas: 0 });
+    await this.dep.salvar({ ...a, fotos_b64, tentativas: 0, usuario: this.dono() });
     await this.avisar();
   }
 
   async pendentes(): Promise<ItemFila[]> {
-    return (await this.dep.todos()).sort((a, b) => a.criado_em - b.criado_em);
+    const eu = this.dono();
+    return (await this.dep.todos())
+      .filter((i) => (i.usuario ?? eu) === eu)          // só os pendentes do usuário que está no app
+      .sort((a, b) => a.criado_em - b.criado_em);
   }
 
   ouvir(f: (n: number) => void): () => void {
@@ -66,7 +70,7 @@ export class Fila {
   }
 
   private async avisar() {
-    const n = (await this.dep.todos()).length;
+    const n = (await this.pendentes()).length;
     this.ouvintes.forEach((f) => f(n));
   }
 
