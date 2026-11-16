@@ -1,8 +1,9 @@
 // Liga a fila ao app: tenta enviar ao abrir, quando o sinal volta e a cada 30 s.
 import { api } from "./api";
+import { ler } from "./armazenamento";
 import { depositoIndexedDB, Fila } from "./fila";
 
-export const fila = new Fila(depositoIndexedDB(), (i) => api.enviarAtendimento(i));
+export const fila = new Fila(depositoIndexedDB(), (i) => api.enviarAtendimento(i), () => ler<string>("usuario", ""));
 
 let iniciado = false;
 export function iniciarSincronia(aoEnviar: (n: number) => void): void {
