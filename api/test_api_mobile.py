@@ -67,7 +67,7 @@ def test_lista_de_pontos_igual_ao_monitor(srv):
     assert st == 200
     fora_app = {p["chave"] for p in j["pontos"] if p["status"] == "OFFLINE"}
     fora_noc = {i["chave"] for i in noc.monitor.lista() if i["status"] == "OFFLINE"}
-    assert fora_app == fora_noc and len(fora_app) == j["resumo"]["offline"]      # CA01
+    assert fora_app == fora_noc and len(fora_app) == j["resumo"]["offline"]      # CA02
     samu = next(p for p in j["pontos"] if "SAMU" in p["nome"])
     assert samu["critico"] and samu["parado_min"] is not None
     assert "senha" not in json.dumps(j).lower()                                   # nada de senha no app
@@ -89,7 +89,7 @@ def test_testar_agora(srv):
     assert req(base + "/api/m/testar", "POST", {"chave": fora["chave"]}, tok)[1]["resultado"] == "OFFLINE"
     req(base + "/dev/alternar", "POST", {"chave": fora["chave"]}, tok)          # "técnico consertou"
     st, j = req(base + "/api/m/testar", "POST", {"chave": fora["chave"]}, tok)
-    assert st == 200 and j["resultado"] == "ONLINE"                              # CA04
+    assert st == 200 and j["resultado"] == "ONLINE"                              # CA08
 
 
 def test_atendimento_offline_nao_duplica(srv):
@@ -104,7 +104,7 @@ def test_atendimento_offline_nao_duplica(srv):
     st, j = req(base + "/api/m/atendimento", "POST", reg, tok)                    # reenvio da fila
     assert j.get("duplicado") is True
     st, j = req(base + "/api/m/atendimentos?chave=" + chave, token=tok)
-    assert len(j["atendimentos"]) == 1                                            # CA03
+    assert len(j["atendimentos"]) == 1                                            # CA06
     a = j["atendimentos"][0]
     assert a["tecnico"] == "tecnico" and a["lat"] == -16.33 and a["offline"] is True
     assert os.path.exists(os.path.join(api_mobile.PASTA_FOTOS, a["fotos"][0]))
